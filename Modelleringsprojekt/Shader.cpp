@@ -22,6 +22,7 @@ Shader::Shader(const std::string& fileName)
 	//tells OpenGL what data to read
 	glBindAttribLocation(m_program, 0, "position");
 	glBindAttribLocation(m_program, 1, "texCoord");
+	glBindAttribLocation(m_program, 2, "normal");
 
 	glLinkProgram(m_program);
 	CheckShaderError(m_program, GL_LINK_STATUS, true, "Error: Program linking failed: ");
@@ -48,9 +49,9 @@ void Shader::Bind()
 	glUseProgram(m_program);
 }
 
-void Shader::Update(const Transform& transform)
+void Shader::Update(const Transform& transform , const Camera& camera)
 {
-	glm::mat4 model = transform.GetModel();
+	glm::mat4 model = camera.getViewProjection()*transform.GetModel();
 
 	glUniformMatrix4fv(m_uniforms[TRANSFORM_U], 1, GL_FALSE, &model[0][0]);
 }

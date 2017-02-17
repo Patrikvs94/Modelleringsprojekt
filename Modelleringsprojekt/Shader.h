@@ -3,6 +3,7 @@
 #include <string>
 #include <GL/glew.h>
 #include "Transform.h"
+#include "Camera.h"
 
 class Shader
 {
@@ -11,7 +12,7 @@ public:
 
 	//use the code from this shader to the GPU
 	void Bind();
-	void Update(const Transform& transform);
+	void Update(const Transform& transform, const Camera& camera);
 
 	virtual ~Shader();
 protected:
