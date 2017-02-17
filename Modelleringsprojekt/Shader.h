@@ -2,6 +2,7 @@
 
 #include <string>
 #include <GL/glew.h>
+#include "Transform.h"
 
 class Shader
 {
@@ -10,6 +11,7 @@ public:
 
 	//use the code from this shader to the GPU
 	void Bind();
+	void Update(const Transform& transform);
 
 	virtual ~Shader();
 protected:
@@ -19,14 +21,20 @@ private:
 	Shader(const Shader& other){}
 	void operator=(const Shader& other) {}
 
+	enum
+	{
+		TRANSFORM_U,
 
-	
+		NUM_UNIFORMS
+	};
 
 	//a handle 
 	GLuint m_program;
 
 	//an array of GLuints; the number of shaders used
 	GLuint m_shaders[NUM_SHADERS];
+
+	GLuint m_uniforms[NUM_UNIFORMS];
 
 };
 
