@@ -2,11 +2,13 @@
 #include<glm/glm.hpp>
 #include<iostream>
 
+#define NUM_PARTICLES 4
+
 class Particle
 {
-	glm::vec3 m_pos[2];
-	glm::vec3 m_oldPos[2];
-	glm::vec3 m_force[2];
+	glm::vec3 m_pos[8];
+	glm::vec3 m_oldPos[8];
+	glm::vec3 m_force[8];
 	glm::vec3 m_gravity;
 
 	float fTimeStep;
@@ -18,8 +20,7 @@ public:
 	~Particle();
 
 	void TimeStep();
-	glm::vec3 GetFirstPos();
-	glm::vec3 GetSecPos();
+	glm::vec3 GetPos(int i);
 
 private:
 

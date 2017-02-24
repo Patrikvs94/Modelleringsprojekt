@@ -8,13 +8,13 @@
 #include "Camera.h"
 #include "Particle.h"
 
-#define WIDTH 800
-#define HEIGHT 600
+#define WIDTH 1064
+#define HEIGHT 800
 
 int main(int argc, char** argv)
 {
 
-	Display display(1064, 800, "Modelleringsprojektet #1!");
+	Display display(WIDTH, HEIGHT, "Modelleringsprojektet #1!");
 
 	Vertex vertices[] = {	Vertex(glm::vec3(-0.5, -0.5, 0.5), glm::vec2(0.0, 0.0)),
 							Vertex(glm::vec3(0, 0.5, 0), glm::vec2(0.5, 1.0)),
@@ -32,77 +32,44 @@ int main(int argc, char** argv)
 
 	Shader shader("./res/basicShader");
 	Texture texture("./res/bricks.jpg");
-	Transform transform;
-	Transform transform2;
-	Camera camera(glm::vec3(0, 0, 50), 70.0f, (float)WIDTH / (float)HEIGHT, 0.01f, 1000.0f);
+	Transform transform[8];
+	Camera camera(glm::vec3(0, 0, 100), 70.0f, (float)WIDTH / (float)HEIGHT, 0.01f, 1000.0f);
 
 	// Set the objects startposition here
-	transform.SetPos(glm::vec3(0.0f , 17.0f , 0.0f));
-	transform2.SetPos(glm::vec3(0.0f, 10.0f, 0.0f));
+	transform[0].SetPos(glm::vec3(1.0f, 8.0f, 1.0f));
+	transform[1].SetPos(glm::vec3(-1.0f, 7.0f, 1.0f));
+	transform[2].SetPos(glm::vec3(1.0f, 7.0f, 1.0f));
+	transform[3].SetPos(glm::vec3(-1.0f, 7.0f, 1.0f));
 
-	glm::vec3 particleArray[2] = { glm::vec3(0.0f , 17.0f , 0.0f), glm::vec3(0.0f, 10.0f, 0.0f) };
+	glm::vec3 particleArray[NUM_PARTICLES] = {  glm::vec3(1.0f , 8.0f , 1.0f), 
+								    glm::vec3(-1.0f, 7.0f, 1.0f),
+									glm::vec3(1.0f, 8.0f, 1.0f), 
+									glm::vec3(-1.0f, 8.0f, 1.0f), 
+									};
 
 	Particle tinyP(particleArray);
-
-
-	// Setting up for verlet, the old position and new position are default set to the apes position
-	//glm::vec3 oldPos = transform.GetPos() + glm::vec3( 0.0f, 0.0f, 0.0f);
-	//glm::vec3 newPos = transform.GetPos();
-	//glm::vec3 acceleration = glm::vec3(0.0f, -9.82f, 0.0f);
-	//float timeStep = 0.001f;
-
-	glm::vec3 floor = glm::vec3(-20.0f, 0.0f, -20.0f);
-	glm::vec3 roof = glm::vec3(25.0f, 50.0f, 20.0f);
-
 
 	float counter = 0.0f;
 
 	while (!display.IsClosed())
 	{
 		display.Clear(0.0f, 0.15f, 0.3f, 1.0f);
-
-		// en liten rotation, ej verlet
-		transform.GetRot().y = 0.02f*counter;
-
-<<<<<<< HEAD
+ 
 		tinyP.TimeStep();
-=======
-		// Verlet part
-		newPos += (transform.GetPos() - oldPos) + (acceleration * timeStep * timeStep);
-		//newPos = glm::min(glm::max(newPos, floor), roof); //boundaries a la axel
 
-		oldPos = transform.GetPos();
-
-		//bound check a la patrik
-		if (oldPos.y < 0)
-			newPos.y = 0;
-
-
-		transform.SetPos(newPos);
-		glm::vec3 position = transform.GetPos();
-
-		//test om det går att manipulera enkilda vertices, det gick men man måste skapa ny mesh varje gång
-		//vertices[0] = Vertex(glm::vec3(sinf(counter), -0.5, 0.5), glm::vec2(0.0, 0.0));
-		//Mesh mesh(vertices, sizeof(vertices) / sizeof(vertices[0]), indices, sizeof(indices) / sizeof(indices[0]));
->>>>>>> origin/Verlet-Ape
-
-		//std::cout << "TinyP position x: " << tinyP.GetFirstPos().x << " position y: " << tinyP.GetFirstPos().y << " position z: " << tinyP.GetFirstPos().z << std::endl ;
-		//std::cout << "TinyP 2 position x: " << tinyP.GetSecPos().x << " position y: " << tinyP.GetSecPos().y << " position z: " << tinyP.GetSecPos().z << std::endl;
-
-		transform.SetPos(tinyP.GetFirstPos());
-
-		transform2.SetPos(tinyP.GetSecPos());
+		for (int i = 0; i < NUM_PARTICLES; i++)
+		{
+			transform[i].SetPos(tinyP.GetPos(i));
+		}
 	
 		shader.Bind();
 
-		shader.Update(transform, camera);
-		mesh.Draw();
-		mesh2.Draw();
+		for (int j = 0; j < NUM_PARTICLES; j++)
+		{
+			shader.Update(transform[j], camera);
+			mesh2.Draw();
 
-
-		shader.Update(transform2, camera);
-		mesh2.Draw();
-
+		}
 
 		display.Update();
 		counter += 0.001f;
