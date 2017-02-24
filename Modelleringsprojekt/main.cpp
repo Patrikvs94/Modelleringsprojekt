@@ -6,6 +6,7 @@
 #include "texture.h"
 #include "Transform.h"
 #include "Camera.h"
+#include "Particle.h"
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -32,17 +33,23 @@ int main(int argc, char** argv)
 	Shader shader("./res/basicShader");
 	Texture texture("./res/bricks.jpg");
 	Transform transform;
-	Camera camera(glm::vec3(0, 0, 4), 70.0f, (float)WIDTH / (float)HEIGHT, 0.01f, 1000.0f);
+	Transform transform2;
+	Camera camera(glm::vec3(0, 0, 50), 70.0f, (float)WIDTH / (float)HEIGHT, 0.01f, 1000.0f);
 
 	// Set the objects startposition here
-	transform.SetPos(glm::vec3(0.0f , 3.0f , 0.0f));
+	transform.SetPos(glm::vec3(0.0f , 17.0f , 0.0f));
+	transform2.SetPos(glm::vec3(0.0f, 10.0f, 0.0f));
+
+	glm::vec3 particleArray[2] = { glm::vec3(0.0f , 17.0f , 0.0f), glm::vec3(0.0f, 10.0f, 0.0f) };
+
+	Particle tinyP(particleArray);
 
 
 	// Setting up for verlet, the old position and new position are default set to the apes position
-	glm::vec3 oldPos = transform.GetPos() + glm::vec3( 0.0f, 0.0f, 0.0f);
-	glm::vec3 newPos = transform.GetPos();
-	glm::vec3 acceleration = glm::vec3(0.0f, -9.82f, 0.0f);
-	float timeStep = 0.001f;
+	//glm::vec3 oldPos = transform.GetPos() + glm::vec3( 0.0f, 0.0f, 0.0f);
+	//glm::vec3 newPos = transform.GetPos();
+	//glm::vec3 acceleration = glm::vec3(0.0f, -9.82f, 0.0f);
+	//float timeStep = 0.001f;
 
 	glm::vec3 floor = glm::vec3(-20.0f, 0.0f, -20.0f);
 	glm::vec3 roof = glm::vec3(25.0f, 50.0f, 20.0f);
@@ -56,25 +63,24 @@ int main(int argc, char** argv)
 
 		transform.GetRot().y = counter;
 
-		// Verlet part
-		newPos += (transform.GetPos() - oldPos) + (acceleration * timeStep * timeStep);
-		newPos = glm::min(glm::max(newPos, floor), roof);
+		tinyP.TimeStep();
 
-		oldPos = transform.GetPos();
-		transform.SetPos(newPos);
-		glm::vec3 position = transform.GetPos();
-		vertices[0] = Vertex(glm::vec3(sinf(counter), -0.5, 0.5), glm::vec2(0.0, 0.0));
+		//std::cout << "TinyP position x: " << tinyP.GetFirstPos().x << " position y: " << tinyP.GetFirstPos().y << " position z: " << tinyP.GetFirstPos().z << std::endl ;
+		//std::cout << "TinyP 2 position x: " << tinyP.GetSecPos().x << " position y: " << tinyP.GetSecPos().y << " position z: " << tinyP.GetSecPos().z << std::endl;
 
+		transform.SetPos(tinyP.GetFirstPos());
 
-
-		// Prints the x and y coordinates to console, to see what happens with the ape
-		std::cout << "Y Position: " << position.y << " X Position: " << position.x << " counter: " << counter << std::endl;
-
-		
+		transform2.SetPos(tinyP.GetSecPos());
+	
 		shader.Bind();
+
 		shader.Update(transform, camera);
-		texture.Bind(0);
 		mesh.Draw();
+
+
+		shader.Update(transform2, camera);
+		mesh2.Draw();
+
 
 		display.Update();
 		counter += 0.001f;

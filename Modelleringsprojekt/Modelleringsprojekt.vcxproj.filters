@@ -28,6 +28,9 @@
     <ClCompile Include="obj_loader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Display.h" />
@@ -38,5 +41,6 @@
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="obj_loader.h" />
+    <ClInclude Include="Particle.h" />
   </ItemGroup>
 </Project>
