@@ -61,9 +61,30 @@ int main(int argc, char** argv)
 	{
 		display.Clear(0.0f, 0.15f, 0.3f, 1.0f);
 
-		transform.GetRot().y = counter;
+		// en liten rotation, ej verlet
+		transform.GetRot().y = 0.02f*counter;
 
+<<<<<<< HEAD
 		tinyP.TimeStep();
+=======
+		// Verlet part
+		newPos += (transform.GetPos() - oldPos) + (acceleration * timeStep * timeStep);
+		//newPos = glm::min(glm::max(newPos, floor), roof); //boundaries a la axel
+
+		oldPos = transform.GetPos();
+
+		//bound check a la patrik
+		if (oldPos.y < 0)
+			newPos.y = 0;
+
+
+		transform.SetPos(newPos);
+		glm::vec3 position = transform.GetPos();
+
+		//test om det går att manipulera enkilda vertices, det gick men man måste skapa ny mesh varje gång
+		//vertices[0] = Vertex(glm::vec3(sinf(counter), -0.5, 0.5), glm::vec2(0.0, 0.0));
+		//Mesh mesh(vertices, sizeof(vertices) / sizeof(vertices[0]), indices, sizeof(indices) / sizeof(indices[0]));
+>>>>>>> origin/Verlet-Ape
 
 		//std::cout << "TinyP position x: " << tinyP.GetFirstPos().x << " position y: " << tinyP.GetFirstPos().y << " position z: " << tinyP.GetFirstPos().z << std::endl ;
 		//std::cout << "TinyP 2 position x: " << tinyP.GetSecPos().x << " position y: " << tinyP.GetSecPos().y << " position z: " << tinyP.GetSecPos().z << std::endl;
@@ -76,6 +97,7 @@ int main(int argc, char** argv)
 
 		shader.Update(transform, camera);
 		mesh.Draw();
+		mesh2.Draw();
 
 
 		shader.Update(transform2, camera);
