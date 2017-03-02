@@ -1,6 +1,7 @@
 #include "Particle.h"
 
 
+
 Particle::Particle(glm::vec3 position[])
 {
 	for (int i = 0; i < NUM_PARTICLES; i++)
@@ -9,11 +10,11 @@ Particle::Particle(glm::vec3 position[])
 		m_oldPos[i] = position[i];
 		m_force[i] = glm::vec3(0.0f, 0.0f, 0.0f);
 		m_gravity = glm::vec3(0.0f, -9.82f, 0.0f);
-		fTimeStep = 0.01f;
+		fTimeStep = 0.001f;
 	}
 
 	//Applying velocity on the positions
-	//m_pos[0] += glm::vec3(0.1f, 0.0f, 0.0f);
+	//m_pos[0] += glm::vec3(1.5f, 0.0f, 0.0f);
 	//m_pos[1] += glm::vec3(0.0f, 0.0f, 0.2f);
 }
 
@@ -31,7 +32,7 @@ void Particle::verlet()
 		glm::vec3 temp = x;
 		glm::vec3& oldx = m_oldPos[i];
 		glm::vec3& a = m_force[i];
-		x += x - oldx + a*fTimeStep*fTimeStep;
+		x += 0.999f*(x - oldx + a*fTimeStep*fTimeStep);
 		oldx = temp;
 	}
 }
@@ -48,8 +49,8 @@ void Particle::satisfyConstraints()
 			float& z = m_pos[j].z;
 
 			x = glm::min(glm::max(x, -10.0f), 20.0f);
-			y = glm::min(glm::max(y, 0.0f), 100.0f);
-			z = glm::min(glm::max(z, 0.0f), 20.0f);
+			y = glm::min(glm::max(y, 0.0f), 150.0f);
+			z = glm::min(glm::max(z, -10.0f), 20.0f);
 
 
 		}
@@ -62,13 +63,13 @@ void Particle::satisfyConstraints()
 
 
 
-			std::cout << "Y positionen 1: " << m_pos[i].y << std::endl;
-			std::cout << "Y positionen 2: " << m_pos[k].y << std::endl;
+			//std::cout << "Y positionen 1: " << m_pos[i].y << std::endl;
+			//std::cout << "Y positionen 2: " << m_pos[k].y << std::endl;
 
 			glm::vec3 delta = x2 - x1;
 			float deltalength = glm::sqrt((delta.x*delta.x) + (delta.y*delta.y) + (delta.z*delta.z));
-			std::cout << "Deltalength: " << deltalength << std::endl;
-			std::cout << "Restlength: " << restlength << std::endl;
+			//std::cout << "Deltalength: " << deltalength << std::endl;
+			//std::cout << "Restlength: " << restlength << std::endl;
 			float diff = (deltalength - restlength) / deltalength;
 			x1 += delta*0.5f*diff;
 			x2 -= delta*0.5f*diff;
@@ -78,8 +79,14 @@ void Particle::satisfyConstraints()
 
 void Particle::AccumulateForces() 
 {
-	for(int i = 0; i < NUM_PARTICLES ; i++)
+
+	for (int i = 0; i < NUM_PARTICLES; i++)
+	{
+		glm::vec3 velocity = (m_pos[i] - m_oldPos[i]);
 		m_force[i] = m_gravity;
+
+	}
+
 
 }
 
