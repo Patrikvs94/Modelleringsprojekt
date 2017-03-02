@@ -37,14 +37,14 @@ int main(int argc, char** argv)
 
 	// Set the objects startposition here
 	transform[0].SetPos(glm::vec3(1.0f, 8.0f, 1.0f));
-	transform[1].SetPos(glm::vec3(-1.0f, 7.0f, 1.0f));
+	transform[1].SetPos(glm::vec3(1.0f, 13.0f, 1.0f));
 	transform[2].SetPos(glm::vec3(1.0f, 7.0f, 1.0f));
 	transform[3].SetPos(glm::vec3(-1.0f, 7.0f, 1.0f));
 
-	glm::vec3 particleArray[NUM_PARTICLES] = {  glm::vec3(1.0f , 8.0f , 1.0f), 
-								    glm::vec3(-1.0f, 7.0f, 1.0f),
-									glm::vec3(1.0f, 8.0f, 1.0f), 
-									glm::vec3(-1.0f, 8.0f, 1.0f), 
+	glm::vec3 particleArray[NUM_PARTICLES] = {  glm::vec3(1.0f , 20.0f , 1.0f), 
+								    glm::vec3(1.0f, 25.0f, 1.0f),
+									glm::vec3(6.0f, 20.0f, 1.0f), 
+									glm::vec3(1.0f, 20.0f, 6.0f), 
 									};
 
 	Particle tinyP(particleArray);
