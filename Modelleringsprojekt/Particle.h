@@ -21,6 +21,7 @@ public:
 
 	void TimeStep();
 	glm::vec3 GetPos(int i);
+	void applyForce();
 
 private:
 

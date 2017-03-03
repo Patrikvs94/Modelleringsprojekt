@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "Particle.h"
 
+
 #define WIDTH 1064
 #define HEIGHT 800
 
@@ -17,24 +18,23 @@ int main(int argc, char** argv)
 	Display display(WIDTH, HEIGHT, "Modelleringsprojektet #1!");
 
 	// 
-	Vertex vertices[] = {	Vertex(glm::vec3(-0.5, -0.5, 0.5), glm::vec2(0.0, 0.0)),
-							Vertex(glm::vec3(0, 0.5, 0), glm::vec2(0.5, 1.0)),
-							Vertex(glm::vec3(0.5, -0.5, 0.5), glm::vec2(1.0, 0.0)),
-							Vertex(glm::vec3(0, -0.5, -0.5), glm::vec2(1.0, 1.0))
+	Vertex vertices[] = {	Vertex(glm::vec3(-20.0, 0.0, -10.0), glm::vec2(0.0, 0.0)),
+							Vertex(glm::vec3(-20.0, 0.0, 20.0), glm::vec2(0.5, 1.0)),
+							Vertex(glm::vec3(20.0, 0.0, -10.0), glm::vec2(1.0, 0.0)),
+							Vertex(glm::vec3(20.0, 0.0, 20.0), glm::vec2(1.0, 1.0))
 	};
 
-	unsigned int indices[] = {  0, 2 ,1,
-								2, 3 ,1,
-								3, 0, 1,
-								0, 3, 2};
+	unsigned int indices[] = {  1, 3 ,2,
+								2, 0, 1};
 
 	Mesh mesh(vertices, sizeof(vertices) / sizeof(vertices[0]), indices, sizeof(indices)/sizeof(indices[0]));
 	Mesh mesh2("./res/monkey3.obj");
 
 	Shader shader("./res/basicShader");
 	Texture texture("./res/bricks.jpg");
-	Transform transform[8];
-	Camera camera(glm::vec3(0, 0, 140), 70.0f, (float)WIDTH / (float)HEIGHT, 0.01f, 1000.0f);
+	Transform transform;
+	Camera camera(glm::vec3(0, 20, 150), 70.0f, (float)WIDTH / (float)HEIGHT, 0.01f, 1000.0f);
+	SDL_Event e;
 
 	// This sets the start positions of the particles, 
 	// they must be approximately the distance from each other that is set to be the constraint in the "Particle.cpp"
@@ -56,17 +56,15 @@ int main(int argc, char** argv)
 	{
 		// Setting the background color
 		display.Clear(0.0f, 0.15f, 0.3f, 1.0f);
- 
+
 		// Initialiaze the movement of tinyP, which in this cas is our tetrahedron,
 		tinyP.TimeStep();
 
 		// This is needed to bind all what is happening to the shader
 		shader.Bind();
 
-
-
-
 		// This loop is going through and updates the position from the tinyP to the shader and drawing a line between particles
+		glPushMatrix();
 		for (int j = 0; j < NUM_PARTICLES; j++)
 		{
 			shader.Update(tinyP.GetPos(j), camera);
@@ -88,8 +86,23 @@ int main(int argc, char** argv)
 			glEnd();
 
 		}
+		glPopMatrix();
 
+		while (SDL_PollEvent(&e))
+		{
+			if (e.type == SDL_KEYDOWN)
+			{
+				if (e.key.keysym.sym == SDLK_SPACE)
+				{
+					tinyP.applyForce();
+					std::cout << "force Applied" << std::endl;
+				}
+			}
+		}
 		// Updates the screen
+		//shader.Update(transform, camera);
+		//transform.SetScale(glm::vec3(2.5f, 2.5f, 2.5f));
+		//mesh.Draw();
 		display.Update();
 	}
 
