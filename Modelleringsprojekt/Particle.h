@@ -20,6 +20,7 @@ public:
 	~Particle();
 
 	void TimeStep();
+	void TimeStep(Particle aParticle);
 	glm::vec3 GetPos(int i);
 	void applyForce();
 
@@ -27,6 +28,7 @@ private:
 
 	void verlet();
 	void satisfyConstraints();
+	void satisfyConstraints(Particle newP);
 	void AccumulateForces();
 
 };

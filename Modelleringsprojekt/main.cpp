@@ -44,9 +44,16 @@ int main(int argc, char** argv)
 									glm::vec3(1.0f, 40.0f, 6.0f), 
 									};
 
+	glm::vec3 particleArray2[NUM_PARTICLES] = { glm::vec3(1.0f , 30.0f , 1.0f),
+		glm::vec3(1.0f, 35.0f, 1.0f),
+		glm::vec3(6.0f, 30.0f, 1.0f),
+		glm::vec3(1.0f, 30.0f, 6.0f),
+	};
+
 	// This is where the object is declared, it is required to send in a set of particle positions that make up the tetrahedron,
 	// At this point it is only possible to send in an array of size 4.
 	Particle tinyP(particleArray);
+	Particle tinyQ(particleArray2);
 
 	float counter = 0.0f;
 
@@ -59,6 +66,8 @@ int main(int argc, char** argv)
 
 		// Initialiaze the movement of tinyP, which in this cas is our tetrahedron,
 		tinyP.TimeStep();
+		tinyQ.TimeStep();
+
 
 		// This is needed to bind all what is happening to the shader
 		shader.Bind();
@@ -88,6 +97,32 @@ int main(int argc, char** argv)
 		}
 		glPopMatrix();
 
+		glPushMatrix();
+		for (int j = 0; j < NUM_PARTICLES; j++)
+		{
+			shader.Update(tinyQ.GetPos(j), camera);
+
+			//start drawin particles
+			glLineWidth(2.5f);
+			glBegin(GL_LINES);
+
+			for (int i = 0; i < NUM_PARTICLES; i++)
+			{
+				for (int k = i + 1; k < NUM_PARTICLES; k++)
+				{
+					glVertex3f(tinyQ.GetPos(i).x, tinyQ.GetPos(i).y, tinyQ.GetPos(i).z);
+					glVertex3f(tinyQ.GetPos(k).x, tinyQ.GetPos(k).y, tinyQ.GetPos(k).z);
+				}
+			}
+
+
+			glEnd();
+
+		}
+		glPopMatrix();
+
+
+		// Hanterar keyboardinput
 		while (SDL_PollEvent(&e))
 		{
 			if (e.type == SDL_KEYDOWN)
@@ -95,6 +130,7 @@ int main(int argc, char** argv)
 				if (e.key.keysym.sym == SDLK_SPACE)
 				{
 					tinyP.applyForce();
+					tinyQ.applyForce();
 					std::cout << "force Applied" << std::endl;
 				}
 			}

@@ -77,6 +77,7 @@ void Particle::satisfyConstraints()
 	}
 }
 
+
 void Particle::AccumulateForces() 
 {
 
